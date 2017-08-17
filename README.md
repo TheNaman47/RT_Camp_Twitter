@@ -13,3 +13,7 @@ The user friendly url is under work and will be updated shortly
 1. For slider [Slick](https://github.com/kenwheeler/slick).
 2. For Twitter Authentication and Data fetching [Abraham](https://github.com/abraham/twitteroauth).
 3. Simple [Bootstrap](http://getbootstrap.com/).
+
+Though the complete assignment is not over. I am working on it.
+
+As soon as more work is done, it will get uploaded here.
