@@ -38,6 +38,7 @@ input[type=text]:focus {
        $fetching_user_names_arr[] = $_SESSION['user_name_arr'];
        $fetching_followers_arr[] = $_SESSION['followers_ayy'];
        $fetching_media_url_arr[] = $_SESSION['media_url_arr'];
+
     ?>
    <br>
    <div class="autoplay">
@@ -45,8 +46,10 @@ input[type=text]:focus {
        $index=1;
         for ($i=0; $i < 10; $i++) { 
             echo '<div style="height: auto; ">';
-            echo $index . ". " . $fetching_user_names_arr[0][$i] . '<br>';
-            echo $fetching_tweet_arr[0][$i];
+            if(!empty($fetching_user_names_arr))
+                echo $index . ". " . $fetching_user_names_arr[0][$i] . '<br>';
+            if(!empty($fetching_tweet_arr))
+                echo $fetching_tweet_arr[0][$i];
            if (!empty($fetching_media_url_arr[0][$i])) {
                 echo '<div style="display: flex;justify-content: left; align-items: left;overflow: hidden; ">';
                 echo '<img src="'.$fetching_media_url_arr[0][$i].'" style="flex-shrink:0; max-width: 50%; max-height: 50%; width: auto; height: auto"/><br>';
@@ -71,29 +74,38 @@ input[type=text]:focus {
             });
 </script>
 </div>
-<div style="position: relative;">
+<div style="position: relative; float: left; margin-right:40px;">
 <br><b><p style="font-size=1.5em; font-color:#17202A">Here are some of your Followers: </p></b><br>
 <?php
 $index=1;
-$temp=0;
 foreach ($fetching_followers_arr as $key => $value) {
     foreach($value as $ans){
         echo '<div style="background-color: lightblue;width: 300px;padding: 5px;border: 2px solid gray;margin: 0;">' . $index . '. ' . $ans . '</div>';
-        $temp_arr[$temp] = $ans;
-        $temp++;
+$index++;
+        if ($index==11) {
+            break 2;
+        }
+}} 
+foreach ($fetching_followers_arr as $key => $value) {
+    foreach ($value as $followers) {
+        $temp_arr[$index-1] = $followers;
         $index++;
-}}  
+    }
+}
 $_SESSION["temp_search"] = $temp_arr;
 ?>
 </div>
 
-<div style="position: relative;">
+<div style="float: left;">
 <br>
-<p><b>Search Your Followers:</b></p>
+<p><b>Search Your Followers:</b></p><br>
 
 <input type="text" name="search" onkeyup="showHint(this.value)" placeholder="Search..">
 <hr/>
-<span id="results"></span>
+<div id="results"></div>
+<br>
+<div id="temp_show">
+</div>
 
 <script>
     function showHint(str) {
@@ -112,10 +124,24 @@ $_SESSION["temp_search"] = $temp_arr;
             xmlhttp.send();
         }
     }
+$(document).on("click","button",function(){
+        var name = $(this).html();
+        var user_name = 'username='+name;
+        $.ajax({
+            type:"post",
+            url:"Storing.php",
+            data:user_name,
+            cache:false,
+            success: function(html){
+                $('#checking').html(html);
+            }
+        });
+    });
 </script>
 
+<br><div id="checking"></div>
 </div>
-
+<div style="width: auto; height: 100px; position: relative;">
 <script type="text/javascript" src="//code.jquery.com/jquery-1.11.0.min.js"></script>
 <script type="text/javascript" src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
 <script type="text/javascript" src="lib/slick/slick.min.js"></script>
