@@ -17,3 +17,10 @@ The user friendly url is under work and will be updated shortly
 Though the complete assignment is not over.The last part is still remaining and also one task of part 2. I am working on it.
 
 As soon as more work is done, it will get uploaded here.
+
+**Updated and Added Files**
+Updated Login.php, slider.php and instant_search.php for new functionalities like searching followers.
+
+Also added Storing.php which updates the slider content when a searched follower is clicked. It is not perfectly working as you have to refresh the page to see the results but I am working on it.
+
+
