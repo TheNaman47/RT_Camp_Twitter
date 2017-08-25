@@ -44,28 +44,62 @@ echo '<div class="w3-container w3-teal">
 	echo '<b>Hi, </b>' . $user->screen_name . '.<br>';
 	echo '<b><u>Your Recent Tweet: </u></b>' . $user->status->text . '<br>';
 	echo '<b><u>Total Tweets: </u></b>' . $user->statuses_count . '<br>';
-
-	//getting tweets and printing them
-	$statuses = $connection->get("statuses/home_timeline", ["count" => 10, "exclude_replies" => true]);
-        $totalTweets[] = $statuses;
-        //echo '<pre>';print_r($totalTweets);echo '</pre>';
-	$start = 0;
-	foreach($totalTweets as $page){
-		foreach($page as $key){
-			$arr_name[$start] = $key->user->name;
-			$arr_tweet[$start] = $key->text;
-			if (array_key_exists("media",$key->entities)) {
-				$arr_media_url[$start] = $key->entities->media[0]->media_url;
+$arr_name = null;
+	$arr_media_url = null;
+	$arr_tweet = null;
+	if (!isset($_SESSION['userTimelineObj'])) {
+		//getting tweets and printing them
+		$statuses = $connection->get("statuses/home_timeline", ["count" => 10, "exclude_replies" => true]);
+		$totalTweets[] = $statuses;
+		
+		$start = 0;
+		foreach($totalTweets as $page){
+			foreach($page as $key){
+				if (array_key_exists("name",$key->user)) {
+					$arr_name[$start] = $key->user->name;
+				}
+				
+				if (array_key_exists("text",$key)) {
+					$arr_tweet[$start] = $key->text;
+				}
+				
+				if (array_key_exists("media",$key->entities)) {
+					$arr_media_url[$start] = $key->entities->media[0]->media_url;
+				}
+				$start++;
 			}
-			$start++;
 		}
+		$_SESSION['user_name_arr'] = $arr_name;
+		$_SESSION['tweets_arr'] = $arr_tweet;
+		$_SESSION['media_url_arr'] = $arr_media_url;
+	}else {
+		$fetching_users_timeline_tweets = $_SESSION['userTimelineObj'];
+		$totalTweets[] = $fetching_users_timeline_tweets;
+		$start = 0;
+		foreach($totalTweets as $page){
+			foreach($page as $key){
+				if (array_key_exists("name",$key->user)) {
+					$arr_name[$start] = $key->user->name;
+				}
+
+				if (array_key_exists("text",$key)) {
+					$arr_tweet[$start] = $key->text;
+				}
+				
+				if (array_key_exists("media",$key->entities)) {
+					$arr_media_url[$start] = $key->entities->media[0]->media_url;
+				}
+				$start++;
+			}
+		}
+		$_SESSION['user_name_arr'] = $arr_name;
+		$_SESSION['tweets_arr'] = $arr_tweet;
+		$_SESSION['media_url_arr'] = $arr_media_url;
 	}
-	$_SESSION['user_name_arr'] = $arr_name;
-	$_SESSION['tweets_arr'] = $arr_tweet;
-	$_SESSION['media_url_arr'] = $arr_media_url;
+
 
         //getting user ids
-	$ids = $connection->get("followers/list", ["cursor"=>-1, "screen_name"=>$user->screen_name, "include_user_entries"=>false, "count"=>10]);
+	$ids = $connection->get("followers/list", ["cursor"=>-1, "screen_name"=>$user->screen_name, "include_user_entries"=>false, "count"=>200]);
         $ids_arr[] = $ids;
         $start1 = 0;
         foreach($ids->users as $i){
